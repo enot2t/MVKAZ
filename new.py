@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 df = pd.DataFrame()
 
 df['col'] = [1, 2, 3]
