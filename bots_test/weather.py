@@ -1,5 +1,6 @@
 import requests
 
+
 def get_weather(location):
     url = f"https://yahoo-weather5.p.rapidapi.com/weather?location={location}&format=json&u=f"
     headers = {
@@ -10,10 +11,12 @@ def get_weather(location):
     data = response.json()
     return data
 
+
 def main():
     location = "Moscow"
     weather_data = get_weather(location)
     print(weather_data)
+
 
 if __name__ == "__main__":
     main()
