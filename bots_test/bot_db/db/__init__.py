@@ -1,0 +1,1 @@
+from bot_db.db import tables

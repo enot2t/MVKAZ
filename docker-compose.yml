@@ -1,0 +1,50 @@
+# version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:15-alpine
+    restart: "no"  # избавляемся от автоматической перезагрузки
+    ports:
+      - "127.0.0.1:5433:5432"
+    environment:
+      # Superuser username/password
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: superuser
+      POSTGRES_PASSWORD: superpassword
+      POSTGRES_DB: data
+    volumes:
+      - "01-simple-alchemy-postgres:/var/lib/postgresql/data"
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: "no"
+    ports:
+      - "127.0.0.1:8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: a@a.com
+      PGADMIN_DEFAULT_PASSWORD: pgadmin
+    volumes:
+      - "01-simple-alchemy-pgadmin:/var/lib/pgadmin"
+    depends_on:
+      - postgres
+
+  metabase:
+    image: metabase/metabase:latest
+    restart: "no"
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: postgres
+      MB_DB_PORT: 5432
+      MB_DB_USER: superuser
+      MB_DB_PASS: superpassword
+      MB_DB_HOST: postgres
+      # MB_JETTY_HOST: 0.0.0.0
+    depends_on:
+      - postgres
+
+volumes:
+  01-simple-alchemy-pgadmin:
+  01-simple-alchemy-postgres:
