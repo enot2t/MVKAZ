@@ -20,6 +20,7 @@ class EventModel(BaseModel):
     start_dt: date
     end_dt: date
     name: str
+    event_time: str
     mode: str
     place: str
     description: str
@@ -46,6 +47,7 @@ class EventModel(BaseModel):
             f"Start Date: {self.start_dt}\n"
             f"End Date: {self.end_dt}\n"
             f"Name: {self.name}\n"
+            f"Event Time: {self.event_time}\n"
             f"Mode: {self.mode}\n"
             f"Place: {self.place}\n"
             f"Description: {self.description}\n"

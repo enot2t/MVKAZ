@@ -16,7 +16,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from app.infrastructure.database.utils.connect_to_pg import get_pg_pool
 from app.tgbot.handlers.commands import commands_router
 from app.tgbot.handlers.simple_button import simple_router
-from app.tgbot.handlers.FSMF_stage import event_router
+from app.tgbot.handlers.add_event import event_router
 from app.middlewares.database import DataBaseMiddleware
 from app.tgbot.keyboards.main_menu import set_main_menu
 from config.config import settings

@@ -3,6 +3,7 @@ import pandas as pd
 import os
 from fpdf import FPDF
 
+
 def get_pdf_path(df: pd.DataFrame) -> str:
 
     df["Дата начала"] = pd.to_datetime(df["Дата начала"]).dt.strftime("%Y-%m-%d")
@@ -28,7 +29,7 @@ def get_pdf_path(df: pd.DataFrame) -> str:
         # Дата и название события
         pdf.cell(200, 10, text=f"{row['Дата начала']} - {row['Дата окончания']}: {row['Название события']}", new_x="LMARGIN", new_y="NEXT", fill=True)
         # Место проведения
-        pdf.cell(200, 10, text=f"Место: {row['Место проведения']}", new_x="LMARGIN", new_y="NEXT", fill=True)
+        pdf.cell(200, 10, text=f"Место: {row['Место проведения']} ({row['Время события']})", new_x="LMARGIN", new_y="NEXT", fill=True)
         # Описание
         pdf.multi_cell(200, 10, text=f"Описание: {row['Описание']}", new_x="LMARGIN", new_y="NEXT", fill=True)
         # Пустая строка для разделения событий

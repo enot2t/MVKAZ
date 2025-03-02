@@ -15,15 +15,16 @@ class _EventDB:
             start_dt: date,
             end_dt: date,
             name: str,
+            event_time: str,
             mode: str,
             place: str,
             description: str,
             duration: int
     ) -> None:
         await self.connection.execute('''
-            INSERT INTO events(user_id, start_dt, end_dt, name, mode, place, description, duration)
-            VALUES(%s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING;
-        ''', (user_id, start_dt, end_dt, name, mode, place, description, duration)
+            INSERT INTO core.events(user_id, start_dt, end_dt, name, event_time, mode, place, description, duration)
+            VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING;
+        ''', (user_id, start_dt, end_dt, name, event_time, mode, place, description, duration)
         )
 
     async def get_event(self, *, user_id: int) -> EventModel | None:
@@ -33,12 +34,13 @@ class _EventDB:
                     start_dt,
                     end_dt,
                     name,
+                    event_time,
                     mode,
                     place,
                     description,
                     duration
-            FROM events
-            WHERE events.user_id = %s
+            FROM core.events
+            WHERE user_id = %s
             ORDER BY id DESC
             LIMIT 1
         ''', (user_id, )
@@ -51,11 +53,12 @@ class _EventDB:
             SELECT start_dt,
                     end_dt,
                     name,
+                    event_time,
                     place,
                     description
                     --, duration
-            FROM events
-            WHERE events.user_id = %s
+            FROM core.events e
+            WHERE user_id = %s
             ORDER BY id DESC
             --LIMIT 5
         ''', (user_id, )

@@ -22,7 +22,7 @@ class _UsersDB:
             username: str
     ) -> None:
         await self.connection.execute('''
-            INSERT INTO users(user_id, role, first_name, last_name, username)
+            INSERT INTO core.users(user_id, role, first_name, last_name, username)
             VALUES(%s, %s, %s, %s, %s) ON CONFLICT DO NOTHING;
         ''', (user_id, role.value, first_name, last_name, username)
         )
@@ -42,8 +42,8 @@ class _UsersDB:
                     first_name,
                     last_name,
                     username
-            FROM users
-            WHERE users.user_id = %s
+            FROM core.users u
+            WHERE u.user_id = %s
         ''', (user_id, )
         )
         data = await cursor.fetchone()

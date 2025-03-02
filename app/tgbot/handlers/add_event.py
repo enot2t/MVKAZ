@@ -31,6 +31,7 @@ class FSMFillForm(StatesGroup):
     fill_start_dt = State()  # Дата начала события
     fill_end_dt = State()   # Дата окончания события
     fill_name = State()     # Название события
+    fill_event_time = State()     # Время проведения события
     fill_mode = State()     # Тип события
     fill_place = State()     # Место проведения события
     fill_description = State()  # Описание события (необязательно)
@@ -112,16 +113,33 @@ async def warning_not_end_dt(message: Message):
 async def process_name(message: Message, state: FSMContext):
     await state.update_data(name=message.text)
     await message.answer(
-        'Введите тип события',
-        reply_markup=select_mode_kb()
+        'Введите время события'
     )
-    await state.set_state(FSMFillForm.fill_mode)
+    await state.set_state(FSMFillForm.fill_event_time)
+
 
 
 @event_router.message(StateFilter(FSMFillForm.fill_name))
 async def warning_not_name(message: Message):
     await message.answer(
         text='Пустое сообщение\nВведите название события'
+    )
+
+
+@event_router.message(StateFilter(FSMFillForm.fill_event_time), F.text)
+async def process_event_time(message: Message, state: FSMContext):
+    await state.update_data(event_name=message.text)
+    await message.answer(
+        'Введите тип события',
+        reply_markup=select_mode_kb()
+    )
+    await state.set_state(FSMFillForm.fill_mode)
+
+
+@event_router.message(StateFilter(FSMFillForm.fill_event_time))
+async def warning_not_event_time(message: Message):
+    await message.answer(
+        text='Пустое сообщение\nВведите время события'
     )
 
 
@@ -172,6 +190,7 @@ async def process_description(message: Message, state: FSMContext, db: DB):
             start_dt=start_date_d,
             end_dt=end_date_d,
             name=user_data.get('name'),
+            event_time=user_data.get('event_time'),
             mode=user_data.get('mode'),
             place=user_data.get('place'),
             description=user_data.get('description'),
@@ -198,6 +217,7 @@ async def process_showdata_command(message: Message, db: DB):
         f"Start Date: {event_record.start_dt}\n"
         f"End Date: {event_record.end_dt}\n"
         f"Mode: {event_record.mode}\n"
+        f"Event Time: {event_record.event_time}\n"
         f"Place: {event_record.place}\n"
         f"Description: {event_record.description}\n"
         f"Duration: {event_record.duration} seconds"
@@ -212,6 +232,7 @@ async def show_events(message: Message, db: DB):
             "Дата начала",
             "Дата окончания",
             "Название события",
+            "Время события",
             "Место проведения",
             "Описание"
         ]
