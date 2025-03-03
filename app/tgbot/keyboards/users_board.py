@@ -19,7 +19,9 @@ def simple_board() -> ReplyKeyboardMarkup:
 def event_board() -> ReplyKeyboardMarkup:
     keyboard: list[list[KeyboardButton]] = [
         [KeyboardButton(text='Внести событие')],
-        [KeyboardButton(text='Посмотреть события')]
+        [KeyboardButton(text='Посмотреть все события')],
+        [KeyboardButton(text='Событие на дату 📅'),
+         KeyboardButton(text='Назад ⬅️')]
         ]
 
     # Создаем объект клавиатуры, добавляя в него кнопки

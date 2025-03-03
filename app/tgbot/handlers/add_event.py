@@ -2,9 +2,8 @@ from aiogram import F, Router
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state, State, StatesGroup
-from app.tgbot.keyboards.users_board import event_board
-from app.tgbot.utils.file_management import get_pdf_path
-from aiogram.types import (CallbackQuery, Message, FSInputFile)
+from app.tgbot.keyboards.users_board import event_board, main_user_board
+from aiogram.types import (CallbackQuery, Message)
 from app.tgbot.keyboards.inline_board import select_mode_kb
 from aiogram_calendar import SimpleCalendar, SimpleCalendarCallback
 from app.infrastructure.database.database.db import DB
@@ -59,7 +58,7 @@ async def process_cancel_command_state(message: Message, state: FSMContext):
 # и переводить бота в состояние ожидания ввода имени
 @event_router.message(F.text == 'Внести событие', StateFilter(default_state))
 async def process_event_command(message: Message, state: FSMContext):
-    await message.answer(text='Введите дату начала события\nФормат ввода "01-01-2025".',
+    await message.answer(text='Введите дату начала события.',
                          reply_markup=await SimpleCalendar().start_calendar())
     # Устанавливаем состояние ожидания ввода имени
     await state.set_state(FSMFillForm.fill_start_dt)
@@ -72,7 +71,7 @@ async def process_simple_calendar(callback_query: CallbackQuery, callback_data: 
         await state.update_data(start_date=date.strftime("%d-%m-%Y"))
         await callback_query.message.answer(
             text=f'Вы выбрали дату начала: {date.strftime("%d-%m-%Y")}\n\n'
-            'Теперь введите дату окончания события в формате "ДД-ММ-ГГГГ".',
+            'Теперь введите дату окончания события.',
             reply_markup=await SimpleCalendar().start_calendar()
             )
         await state.set_state(FSMFillForm.fill_end_dt)
@@ -223,28 +222,3 @@ async def process_showdata_command(message: Message, db: DB):
         f"Duration: {event_record.duration} seconds"
     )
     await message.answer(event_info)
-
-@event_router.message(F.text == 'Посмотреть события', StateFilter(default_state))
-async def show_events(message: Message, db: DB):
-
-    event_load: EventModel | None = await db.events.load_events(user_id=message.from_user.id)
-    columns = [
-            "Дата начала",
-            "Дата окончания",
-            "Название события",
-            "Время события",
-            "Место проведения",
-            "Описание"
-        ]
-
-    # Создание DataFrame
-    df = pd.DataFrame(event_load, columns=columns)
-    df_message = df[['Название события']]
-    pdf_path = get_pdf_path(df)
-
-    await message.answer(text=f"<pre>{df_message.to_string(index=False,header=False)}</pre>", parse_mode='HTML')
-    # Отправка PDF-файла
-    await message.answer_document(document=FSInputFile(pdf_path))
-
-    # Удаление файла после отправки
-    os.remove(pdf_path)

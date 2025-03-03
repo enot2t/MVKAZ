@@ -15,6 +15,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 from app.infrastructure.database.utils.connect_to_pg import get_pg_pool
 from app.tgbot.handlers.commands import commands_router
+from app.tgbot.handlers.events_commands import menu_events
 from app.tgbot.handlers.simple_button import simple_router
 from app.tgbot.handlers.add_event import event_router
 from app.middlewares.database import DataBaseMiddleware
@@ -42,7 +43,7 @@ async def main():
     await set_main_menu(bot)
 
     logger.info("Including routers")
-    dp.include_routers(event_router, commands_router)
+    dp.include_routers(menu_events, event_router, commands_router)
 
     dp.update.middleware(DataBaseMiddleware())
 

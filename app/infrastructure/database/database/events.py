@@ -57,10 +57,11 @@ class _EventDB:
                     place,
                     description
                     --, duration
-            FROM core.events e
+            FROM  core.events e
             WHERE user_id = %s
-            ORDER BY id DESC
-            --LIMIT 5
+              AND mode='temporary'
+              AND date(end_dt) >= current_date
+            ORDER BY id
         ''', (user_id, )
         )
         data = await cursor.fetchall()  # Получаем все строки
