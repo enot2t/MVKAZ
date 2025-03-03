@@ -4,7 +4,7 @@ services:
 
   postgres:
     image: postgres:15-alpine
-    restart: "no"  # избавляемся от автоматической перезагрузки
+    restart: always  # избавляемся от автоматической перезагрузки
     ports:
       - "127.0.0.1:5433:5432"
     environment:
@@ -18,7 +18,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4:latest
-    restart: "no"
+    restart: always
     ports:
       - "127.0.0.1:8080:80"
     environment:
@@ -31,7 +31,7 @@ services:
 
   metabase:
     image: metabase/metabase:latest
-    restart: "no"
+    restart: always
     ports:
       - "127.0.0.1:3000:3000"
     environment:
