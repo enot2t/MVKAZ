@@ -198,12 +198,12 @@ async def process_description(message: Message, state: FSMContext, db: DB):
         )
     await state.clear()
     await message.answer(
-        text='Спасибо! Ваши данные сохранены!\n\n'
+        text='Спасибо! Ваши событие сохранено!\n\n'
     )
     # Отправляем в чат сообщение с предложением посмотреть свою анкету
     await message.answer(
-        text='Чтобы посмотреть данные вашей '
-             'анкеты - отправьте команду /showdata'
+        text='Чтобы посмотреть последнее внесенное '
+             'событие - отправьте команду /showdata'
     )
 
 @event_router.message(Command(commands='showdata'), StateFilter(default_state))
