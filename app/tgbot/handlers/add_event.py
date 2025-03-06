@@ -127,7 +127,7 @@ async def warning_not_name(message: Message):
 
 @event_router.message(StateFilter(FSMFillForm.fill_event_time), F.text)
 async def process_event_time(message: Message, state: FSMContext):
-    await state.update_data(event_name=message.text)
+    await state.update_data(event_time=message.text)
     await message.answer(
         'Введите тип события',
         reply_markup=select_mode_kb()
